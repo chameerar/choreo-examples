@@ -72,3 +72,53 @@ service shopify:OrdersService on shopifyListener {
         // Write your logic here
     }
 }
+
+service shopify:CustomersService on shopifyListener {
+    
+
+    remote function onCustomersCreate(shopify:CustomerEvent event) returns error? {
+         log:printInfo("Customer cretead: " + event?.first_name.toString());
+    }
+
+    remote function onCustomersDisable(shopify:CustomerEvent event) returns error? {
+        return;
+    }
+
+    remote function onCustomersEnable(shopify:CustomerEvent event) returns error? {
+        return;
+    }
+
+    remote function onCustomersMarketingConsentUpdate(shopify:CustomerEvent event) returns error? {
+        return;
+    }
+
+    remote function onCustomersUpdate(shopify:CustomerEvent event) returns error? {
+        return;
+    }
+
+
+}
+
+service shopify:ProductsService on shopifyListener {
+
+    remote function onProductsCreate(shopify:ProductEvent event) returns error? {
+       log:printInfo("Product cretead: " + event?.title.toString());
+    }
+
+    remote function onProductsUpdate(shopify:ProductEvent event) returns error? {
+        return;
+    }
+}
+
+service shopify:FulfillmentsService on shopifyListener {
+
+
+    remote function onFulfillmentsCreate(shopify:FulfillmentEvent event) returns error? {
+        log:printInfo("Fulfil cretead: " + event?.name.toString());
+    }
+
+    remote function onFulfillmentsUpdate(shopify:FulfillmentEvent event) returns error? {
+        return;
+    }
+}
+

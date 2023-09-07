@@ -27,7 +27,7 @@ map<MsgType> msgTypes = {
 };
 
 service / on new http:Listener(8090) {
-    resource function post [string msgTypeId](http:Request req) returns string|error|http:Response {
+    resource function post [string msgTypeId](http:Request req) returns json|error|http:Response {
 
         // get EDI message from the payload
         string ediMsg = check req.getTextPayload();
@@ -73,59 +73,61 @@ service / on new http:Listener(8090) {
                 productQty: productQty,
                 msgType: msgTypeId
             };
+            
+            return supplierRequest.toJson();
 
-            // communicate with the supplier
-            io:println("Buyer Request: " + supplierRequest.toString());
-            http:Client supplierService = check new ("https://samples.choreoapps.dev/supplier");
-            SupplierResponse supplierResponse = check supplierService->post("/", supplierRequest);
-            io:println("Supplier Response: " + supplierResponse.toString());
+            // // communicate with the supplier
+            // io:println("Buyer Request: " + supplierRequest.toString());
+            // http:Client supplierService = check new ("https://samples.choreoapps.dev/supplier");
+            // SupplierResponse supplierResponse = check supplierService->post("/", supplierRequest);
+            // io:println("Supplier Response: " + supplierResponse.toString());
 
-            // transformation and data mapping : process supplier response
-            mORDRSP:EDI_ORDRSP_Purchase_order_response_message responseEdiMsg = {
-                BEGINNING_OF_MESSAGE: beginningOfMessage,
-                DATE_TIME_PERIOD: dateTimePeriod,
-                Segment_group_1: references,
-                SECTION_CONTROL: {
-                    Section_identification: ""
-                }
-            };
+            // // transformation and data mapping : process supplier response
+            // mORDRSP:EDI_ORDRSP_Purchase_order_response_message responseEdiMsg = {
+            //     BEGINNING_OF_MESSAGE: beginningOfMessage,
+            //     DATE_TIME_PERIOD: dateTimePeriod,
+            //     Segment_group_1: references,
+            //     SECTION_CONTROL: {
+            //         Section_identification: ""
+            //     }
+            // };
 
-            if (supplierResponse.isConfirmed == true) {
-                responseEdiMsg.Segment_group_26 = [
-                    {
-                        LINE_ITEM: qtyData.LINE_ITEM,
-                        QUANTITY: qtyData.QUANTITY,
-                        FREE_TEXT: [
-                            {
-                                Text_subject_code_qualifier: "AAE",
-                                TEXT_LITERAL: {
-                                    Free_text: "Order is accepted"
-                                }
-                            }
-                        ]
-                    }
-                ];
-            } else {
-                responseEdiMsg.Segment_group_26 = [
-                    {
-                        LINE_ITEM: qtyData.LINE_ITEM,
-                        QUANTITY: [], // set quantity empty
-                        FREE_TEXT: [
-                            {
-                                Text_subject_code_qualifier: "AAE",
-                                TEXT_LITERAL: {
-                                    Free_text: "Order is rejected"
-                                }
-                            }
-                        ]
-                    }
-                ];
-            }
+            // if (supplierResponse.isConfirmed == true) {
+            //     responseEdiMsg.Segment_group_26 = [
+            //         {
+            //             LINE_ITEM: qtyData.LINE_ITEM,
+            //             QUANTITY: qtyData.QUANTITY,
+            //             FREE_TEXT: [
+            //                 {
+            //                     Text_subject_code_qualifier: "AAE",
+            //                     TEXT_LITERAL: {
+            //                         Free_text: "Order is accepted"
+            //                     }
+            //                 }
+            //             ]
+            //         }
+            //     ];
+            // } else {
+            //     responseEdiMsg.Segment_group_26 = [
+            //         {
+            //             LINE_ITEM: qtyData.LINE_ITEM,
+            //             QUANTITY: [], // set quantity empty
+            //             FREE_TEXT: [
+            //                 {
+            //                     Text_subject_code_qualifier: "AAE",
+            //                     TEXT_LITERAL: {
+            //                         Free_text: "Order is rejected"
+            //                     }
+            //                 }
+            //             ]
+            //         }
+            //     ];
+            // }
 
-            // transformation : perpare EDI response
-            string responseEDI = check mORDRSP:toEdiString(responseEdiMsg);
-            // responding to the buyer
-            return responseEDI;
+            // // transformation : perpare EDI response
+            // string responseEDI = check mORDRSP:toEdiString(responseEdiMsg);
+            // // responding to the buyer
+            // return responseEDI;
         }
     }
 }

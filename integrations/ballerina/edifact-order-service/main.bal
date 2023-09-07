@@ -1,7 +1,5 @@
 import ballerina/http;
-import ballerina/io;
 import ballerinax/edifact.d03a.supplychain.mORDERS;
-import ballerinax/edifact.d03a.supplychain.mORDRSP;
 
 public type SupplierRequest record {|
     string buyerName?;

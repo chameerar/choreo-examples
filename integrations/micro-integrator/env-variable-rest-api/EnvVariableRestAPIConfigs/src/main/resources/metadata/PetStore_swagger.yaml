@@ -16,4 +16,4 @@ paths:
           type: string
       responses:
         default:
-          description: Default response
+          description: Default response 

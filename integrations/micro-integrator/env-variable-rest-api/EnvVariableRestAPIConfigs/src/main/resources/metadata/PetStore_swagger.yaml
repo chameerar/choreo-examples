@@ -6,11 +6,6 @@ info:
 servers:
 - url: http://localhost:8290/petstore
 paths:
-  /pets:
-    get:
-      responses:
-        default:
-          description: Default response
   /pets/{petid}:
     get:
       parameters:

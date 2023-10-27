@@ -21,7 +21,7 @@
         </outSequence>
         <faultSequence/>
     </resource>
-    <resource methods="GET" uri-template="/pets/{petid}">
+    <resource methods="GET" uri-template="/pet/{petid}">
         <inSequence>
             <send>
                 <endpoint>

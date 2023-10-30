@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<api context="/petstorea" name="PetStore" xmlns="http://ws.apache.org/ns/synapse">
+<api context="/petstore" name="PetStore" xmlns="http://ws.apache.org/ns/synapse">
     <resource methods="GET" uri-template="/pet/{petid}">
         <inSequence>
             <send>
